@@ -1,0 +1,11 @@
+# Created by venv; see https://docs.python.org/3/library/venv.html
+
+first_versions/
+__pycache__/
+
+OCR/ServiceAccountToken.json
+
+.DS_Store
+
+credentials.py
+
