@@ -19,7 +19,7 @@ make install
 
 Antes de utilizar os scripts é necessário configurar o ficheiro __settings.py__ com as credenciais de acesso à base de dados e ao armazanemaneto de ficheiros por sftp.
 
-## 1 - Digitalização
+## 1️⃣ - Digitalização
 
 O processo de digitalização pode ser executado de diversas maneiras dependendo das tecnologias disponiveis. O importante será obter uma imagem digitalizada com qualidade suficiente para que o texto seja legível. Imagens ajustadas com um bom contraste facilitam o processo de OCR. As imagens devem ser guardadas em formato \*.jpg.
 
@@ -149,7 +149,7 @@ O importante será, ao chegar ao final esta fase, antes de proceder para o OCR, 
 <nome da gaveta>_<numero>_<tipo de imagem>.jpg
 ```
 
-## 2 - OCR
+## 2️⃣ - OCR
 
 Para efetuar o reconhecimento de carateres nas imagens (OCR - _optical character recognition_) usa-se o motor de OCR da google cloud vision.
 
@@ -191,7 +191,7 @@ O texto extraído de cada imagem será gravado na mesma pasta das imagens, obtê
         └── B_0073_b.txt
 ```
 
-## 3 - Upload de ficheiros
+## 3️⃣ - Upload de ficheiros
 Antes de fazer upload dos ficheiros para o servidor é preciso organizá-los e criar _thumbnails_ de cada imagem.
 
 Uma vez que os ficheiros já contém como prefixo o nome da pasta a que pertencem, pode-se agora renomear cada pasta com o número que corresponderá à sua ID na base de dados. Para isso faz-se uma conexão ao armazenamento no servidor para verificar a pasta com maior número de ID. Após obter o número, as pastas serão renomeadas por ordem alfabética a partir do número imediatamente a seguir. Usando o exemplo de estrutura de ficheiros dado até aqui, se o número detetado fosse 11 a pasta A seria renomeada para 12 e a B para 13.
@@ -243,7 +243,7 @@ python3 sftp_upload.py
 O script fará as verificações necessárias, confirmando sempre com o utilizador antes de fazer qualquer carregamento.
 
 
-## 4 - Atualizar base de dados
+## 4️⃣ - Atualizar base de dados
 
 A base de dados obedece ao seguinte esquema:
 
@@ -325,7 +325,11 @@ Depois de correr o script deverão ser criados três ficheiros, correpondente à
 └── records_record.csv
 ```
 
+
+---
+
 Obtidos os ficheiros, pode-se fazer o carregamento dos dados para a base de dados de duas maneiras:
+
 
 ### Através do painel de administração
 
@@ -349,7 +353,6 @@ O nome das instituições, coleções e grupos pode ser mudado a qualquer altura
 
 Pode-se também carregar os dados para a base de dados pela linha de comandos
 
-
 ### Através da linha de comandos
 
 Depois dos ficheiros csv criados com o script apropriado, pode-se fazer o carrregamneto dos dados das 3 tabelas executando apenas o seguinte comando:
@@ -359,6 +362,7 @@ python3 update_db.py caminho/para/csv_data
 
 Se todos os passos do projecto foram seguidos, após o script terminar,os documentos deverão estar disponíveis na plataforma.
 
+---
 ### Apagar dados da base de dados
 
 Qualquer registo da base de dados pode ser apagado tanto através do painel de administração como por a execução dos comandos abaixo indicados.
