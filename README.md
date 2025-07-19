@@ -1,5 +1,5 @@
 
-# Ferramentas para automatizar o carregamento de documentos para a platafora Arquivo-MHNC-UP
+# _Workflow_ para o carregamento de documentos para a plataforma Arquivo-Biopolis
 
 # Fases do processo
 #### O _workflow_ para carregar documentos para a plataforma divide-se em 4 fases:
@@ -12,7 +12,24 @@ Este _workflow_ incluí vários scripts que tem como objectivo automatizar as di
 
 Para correr os scripts de automatização de cada fase é necessário ter instalado uma versão de python igual ou superior a python 3.9. Para instruções de instalação, por favor, referir-se a https://www.python.org/.
 
-Tendo um ambiente python a funcionar o repositório pode ser clonado ou baixado e após instaladas as bibliotecas necessárias todos os scripts ficam prontos para correr. Para instalar as bibliotecas necessárias correr o comando
+Para garantir que as dependências do projeto sejam instaladas de forma isolada e evitar conflitos com outras bibliotecas do seu sistema, é altamente recomendado utilizar um ambiente virtual Python.
+```
+python3 -m venv <nome_da_pasta>
+```
+
+Para ativar o ambiente, fazer cd para entrar na pasta criada:
+- No Windows:
+```
+Scripts\activate
+```
+- No macOS/Linux:
+```
+source bin/activate
+```
+
+Copiar o repositório para o interior da pasta.
+
+Tendo um ambiente python a funcionar e o repositório gravado localmente entrar na pasta do repositório e executar o seguinte comando para instalar as bibliotecas necessárias:
 ```
 make install
 ```
@@ -101,28 +118,28 @@ A_1230_b.jpg
 
 Dependendo da ordem de digitalização e da natureza das imagens, esta identificação poderá ser feita de muitas maneiras, que poderá ou não obedecer um padrão, requerendo ou não algum trabalho manual.
 
-Criou-se no entanto um automatismo que tenta abordar as situações mais comuns:
+Criou-se, no entanto, um automatismo que tenta abordar as situações mais comuns:
 
-* O grupo de imagens digitalizadas contém só frente do documento
+* #### O grupo de imagens digitalizadas contém só frente do documento
 
 Se as imagens digitalizadas forem todas correspondente a frentes de documentos, basta acrecentar um "\_f" no final de todas as imagens. Correr:
 ```
 python3 rename_types.py caminho/para/main_dir --all-f 
 ```
 
-- O grupo de imagens digitalizadas contém frente e verso do documento
+- #### O grupo de imagens digitalizadas contém frente e verso do documento
 
 Para fichas com frente e verso, os ficheiro devem ser digitalizados e guardados sequencialmente, obedecendo sempre à ordem frente, verso, frente, verso, ..., independentemente se o verso tem ou não conteúdo, de modo que numa sequencia 001, 002, 003, 004 ..., um número impar corresponda a uma frente e o par imediatamente a seguir corresponda ao seu verso. Por exemplo, 001.jpg e 002.jpg serão respetivamente a frente e o verso da mesma ficha. Correr:
 ```
 python3 rename_types.py caminho/para/main_dir --f-and-b
 ```
 
-- O grupo de imagens digitalizadas contém frente do documento e uma imagem associada
+- #### O grupo de imagens digitalizadas contém frente do documento e uma imagem associada
 
 Aqui aplica-se o mesmo princípio do caso anterior, mas com a letra _a_ para indicar que é uma imagem associada. Assim, numa sequência 001, 002, 003, 004 ..., um número impar corresponderá a uma frente e o par imediatamente a seguir corresponderá à imagem associada. Correr:
 
 ```
-python3 rename_types.py caminho/para/main_dir --f-and-a # para imagens com imagens associadas
+python3 rename_types.py caminho/para/main_dir --f-and-a
 ```
 
 Em todos os casos o nome da pasta é acrescentado como prefixo a cada ficheiro.
@@ -144,7 +161,7 @@ Exemplo de estrutura de ficheiros depois da renomeação para o caso de frentes 
         └── B_0073_b.jpg
 ```
 
-O importante será, ao chegar ao final esta fase, antes de proceder para o OCR, ter uma estrutura de ficheiros semelhante à ilustrada, e onde o nome de ficheiro obedeça ao formato:
+O importante será, ao chegar ao final desta fase, antes de proceder para o OCR, ter uma estrutura de ficheiros semelhante à ilustrada, e onde o nome de ficheiro obedeça ao formato:
 ```
 <nome da gaveta>_<numero>_<tipo de imagem>.jpg
 ```
@@ -163,7 +180,7 @@ Será também necessário ativar o faturamento na google cloud para poder usar o
 
 Depois de tudo corretamente configurado, basta correr o script __GVC_ocr.py__ apontando o caminho para _main_dir_:
 ```
-$python3 GVC_ocr.py caminho/para/main_dir
+python3 GVC_ocr.py caminho/para/main_dir
 ```
 O texto extraído de cada imagem será gravado na mesma pasta das imagens, obtêm-se então uma estrutura similar a esta:
 
@@ -384,3 +401,6 @@ make del_group ID=<id do grupo>
 make del_record ID=<id da ficha> 
 ```
 
+## Fluxograma das diferentes fase de processamento
+
+![fluxograma](assets/fluxograma.png)
