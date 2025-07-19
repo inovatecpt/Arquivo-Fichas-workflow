@@ -27,7 +27,7 @@ Este _workflow_ considera que apenas se adiciona documentos para uma colecção 
 
 A nomeação de cada ficheiro deve ser única e de preferência obdecendo a uma serialização numérica.
 
-Este workflow implica  criar as pastas correspondentes à gavetas num diretório principal de trabalho, daqui para a frente referenciado como _main_dir_.
+Este workflow implica usar num diretório principal de trabalho, daqui para a frente referenciado como _main_dir_, onde deverá ser criada a estrutura de ficheiros.
 
 As imagens devem ser gravadas numa pasta com o nome do grupo/gaveta a que pertencem. Exemplo da estrutura de diretorios após a digitalizaçao das gavetas A e B:
 ```
@@ -53,7 +53,7 @@ Caso os ficheiros não sejam corretamente nomeados durante a captura, basta corr
 ```
 python3 seq_rename.py caminho/para/main_dir
 ```
-É ainda possível definir o número máximo de algarismo, colocando zeros à esquerda, indicando o nº como argumento após indicar o caminho:
+É ainda possível definir o número máximo de algarismos, colocando zeros à esquerda, indicando o nº como argumento após indicar o caminho:
 
 ```
 python3 seq_rename.py caminho/para/main_dir 5
@@ -105,23 +105,23 @@ Criou-se no entanto um automatismo que tenta abordar as situações mais comuns:
 
 * O grupo de imagens digitalizadas contém só frente do documento
 
-Se as imagens digitalizadas forem todas correspondente a frentes de documentos, basta acrecentar um "\_f" no final de todas as imagens.
+Se as imagens digitalizadas forem todas correspondente a frentes de documentos, basta acrecentar um "\_f" no final de todas as imagens. Correr:
+```
+python3 rename_types.py caminho/para/main_dir --all-f 
+```
 
 - O grupo de imagens digitalizadas contém frente e verso do documento
 
-Para fichas com frente e verso, os ficheiro devem ser digitalizados e guardados sequencialmente, obedecendo sempre à ordem frente, verso, frente, verso, ..., independentemente se o verso tem ou não conteúdo, de modo que numa sequencia 001, 002, 003, 004 ..., um número impar corresponda a uma frente e o par imediatamente a seguir corresponda ao seu verso. Por exemplo, 001.jpg e 002.jpg serão respetivamente a frente e o verso da mesma ficha. 
+Para fichas com frente e verso, os ficheiro devem ser digitalizados e guardados sequencialmente, obedecendo sempre à ordem frente, verso, frente, verso, ..., independentemente se o verso tem ou não conteúdo, de modo que numa sequencia 001, 002, 003, 004 ..., um número impar corresponda a uma frente e o par imediatamente a seguir corresponda ao seu verso. Por exemplo, 001.jpg e 002.jpg serão respetivamente a frente e o verso da mesma ficha. Correr:
+```
+python3 rename_types.py caminho/para/main_dir --f-and-b
+```
 
 - O grupo de imagens digitalizadas contém frente do documento e uma imagem associada
 
-Aqui aplica-se o mesmo princípio do caso anterior, mas com a letra _a_ para indicar que é uma imagem associada. Assim, numa sequência 001, 002, 003, 004 ..., um número impar corresponderá a uma frente e o par imediatamente a seguir corresponderá à imagem associada.
-
-Para correr o script para cada um dos três casos:
+Aqui aplica-se o mesmo princípio do caso anterior, mas com a letra _a_ para indicar que é uma imagem associada. Assim, numa sequência 001, 002, 003, 004 ..., um número impar corresponderá a uma frente e o par imediatamente a seguir corresponderá à imagem associada. Correr:
 
 ```
-python3 rename_types.py caminho/para/main_dir --all-f # para imagens só com frentes
-
-python3 rename_types.py caminho/para/main_dir --f-and-b # para imagens com frentes e versos
-
 python3 rename_types.py caminho/para/main_dir --f-and-a # para imagens com imagens associadas
 ```
 
@@ -144,13 +144,10 @@ Exemplo de estrutura de ficheiros depois da renomeação para o caso de frentes 
         └── B_0073_b.jpg
 ```
 
-Após a renomeação, se desejado, pode-se eliminar os versos de fichas sem conteúdo.
-
-O importante será, ao chegar a esta fase, antes de proceder para o OCR, ter uma estrutura de ficheiros semelhante à ilustrada, e onde o nome de ficheiro obedeca ao formato:
+O importante será, ao chegar ao final esta fase, antes de proceder para o OCR, ter uma estrutura de ficheiros semelhante à ilustrada, e onde o nome de ficheiro obedeça ao formato:
 ```
 <nome da gaveta>_<numero>_<tipo de imagem>.jpg
 ```
-
 
 ## 2 - OCR
 
@@ -206,11 +203,11 @@ Para realizar todas estas tarefas basta correr o script __prepare_upload.py__. (
 ```
 $python3 prepare_upload.py.py caminho/para/main_dir
 ```
-Opcionalmente pode também ser dado o caminho para onde criar a pasta "uploads". Se nenhum caminho for indicado, a pasta será criada no mesmo nível que main_dir.
+Opcionalmente, pode-se também ser indicar o caminho para onde criar a pasta "uploads". Se nenhum caminho for indicado, a pasta será criada no mesmo nível que main_dir.
 ```
 $python3 prepare_upload.py.py caminho/para/main_dir caminho/para/uploads
 ```
-Considerando que a pasta com maior nº de ID no servidor é 11 O diretório "uploads" deverá ter a seguinte estrutura:
+Considerando que a pasta com maior nº de ID no servidor é 11 O diretório "uploads" deverá ter a seguinte estrutura ( da mesma maneira o nome das pastas em _main_dir_ também é alterado para a id atribuída):
 ```
 uploads
 ├── 12
@@ -237,13 +234,13 @@ uploads
 
 Agora, a pasta está pronta para ser carregada para o servidor. O processo pode ser feito manualmente usando software que realize transferência de ficheiros por sftp (FileZilla, por ex.), copiando todas as pastas do diretorio uploads para a pasta remota no servidor ou correndo o script __sftp_upload.py__ .
 
-O script __sftp_upload.py__ permite carregar ficheiros para o servidor.Antes de correr o script é necessário configurar o seu cabeçalho com os dados correctos para efectuar ligação ao servidor.
+O script __sftp_upload.py__ permite carregar ficheiros para o servidor automaticamente.
 
  ```
-$python3 sftp_upload.py 
+python3 sftp_upload.py 
 ```
 
-Caso as pastas não tenham sido renomeadas usando o script anterior, mas manualmente, por exemplo,  para adicionar ficheiros a uma pasta já existente, o script fará as verificações necessárias confirmando sempre com o utilizador antes de fazer qualquer carregamento.
+O script fará as verificações necessárias, confirmando sempre com o utilizador antes de fazer qualquer carregamento.
 
 
 ## 4 - Atualizar base de dados
@@ -263,43 +260,55 @@ Cada gaveta pode conter uma ou mais fichas (_records_record_). Foram introduzido
 
 Cada ficha pode ter associada uma ou mais imagens (_records_image_). As fichas da gaveta "amostra" da colecção "Etnografia" têm 252 imagens associadas (frente e verso) e as fichas da gaveta "amostra" da colecção "Etnografia" têm 200 imagens associadas (frente e associada).
 
+Antes de adicionar os registos à base de dados é necessário criar tabelas em ficheiros csv devidamente formatadas para que se possa importar mais do que um registo de cada vez.
 
-### A adição de registos na base de dados pode ser feita de dois modos:
+A ordem de inserção de dados deve ser feita respeitando as dependências das tabelas:
 
-- Inserção manual através do painel de administrador da aplicação. Este método é apenas indicado para adição de poucos registos, pode ser usado para inserir uma nova colecção ou gaveta.
+instituição -> coleção -> grupo -> ficha -> imagem
 
-Para aceder ao painel de adminstração usar este endereço:
-https://arquivo-biopolis.inovatec.pt/admin/
+Assim, o primeiro passo será aceder ao painel de admnistração atravé do link na página principal e introduzir as credenciais solicitadas.
 
-Será pedido o nome de utilizador e a respetiva password.
+Do lado esquerdo, no separador "RECORDS" pode-se aceder a todas as tabelas da base de dados:
 
-- Criação de uma nova colecção deve ser feita sempre manualmente atravé do painel de adminstração:
+![Admin_main_panel](assets/admin_main_panel.png)
 
-![Admin_panel_collection](assets/admin_collection_panel.png)
+Clicando em _institutions_, pode-se ver a instituição "Biopolis" já criada:
 
-Para a preparação de tabelas "\*.csv" com dados para adicionar à base de dados, basta correr o script __prepare_csv.py__ apontando o caminho do diretório principal ond se encontram as pastas com os ficheiros de imagem e texto. (Comfirmar se os dados de acesso à base de dados estão configurados em __settings.py__)
+![Admin_panel_institution](assets/admin_institution_panel.png)
 
+Clicando em _collections_, pode-se ver as colecções de demonstração criadas e criar uma nova colecção:
 
-É necessário indicar na linha de comandos, como segundo argumento, a seguir ao caminho do _main_dir_, o número da ID da coleção ao qual pertencem as gavetas. Se o número não existir o script irá emitir um aviso.
+![collection_creation](assets/collection_creation.gif)
 
-```
-$python3 prepare_csv.py caminho/para/main_dir <id_da_coleção>
-```
+Para preparar os dados para a coleção é necessário usar o nº de ID da mesma. No exemplo apresentado na animação, pode-se ver que a coleção criada - "nova colecção" ficou com ID, automaticamente atribuído, 7.
 
-Para verificar se a coleção já foi criada, aceder ao painel de administração e ver o contúdo da tabela "collections".
+Com a estrutura de ficheiros obtida no passo 1 e com a coleção criada, tem-se todos os dados necessários para criar as tabelas dos registos das gavetas, fichas e respetivas imagens.
 
-Pode-se também correr o seguinte commando para verificar se uma ID de colecção existe:
-```
-$python3 get_max_id.py --check-collection <id_da_coleção>
-```
+Para isso basta correr o script de automação para o efeito indicando o caminho para o _main_dir_ e o nº de id da coleção.
 
-Depois de correr __prepare_csv.py__, uma pasta "csv_data" será criada no directório principal para onde serão gravados os ficheiro correspondentes às três tabelas (records_group, records_record e records_image). Opcionalmente pode ser dado um terceiro argumento na linha de comandos para personalizar o caminho para a gravação dos ficheiros "\*.csv":
+Como se verá mais à frente a atualização da base de dados pode ser feita de duas maneiras, [através do painel de administração](#Através-do-painel-de-administração) ou [através da linha de comandos](#Através-da-linha-de-comandos). Na preparação dos csv's, dever-se-á ter em atenção de que modo se deseja proceder, porque a formatação do cabeçalho dos ficheiros difere ligeiramente.
+
+Assim, se se desejar utilizar a interface do painel de administração correr:
 
 ```
-$python3 prepare_csv.py caminho/para/main_dir <id_da_coleção> caminho/personalizado/para/ficheiros/csv
+python3 build_csv_admin.py caminho/para/main_dir <id_da_coleção>
 ```
+caso se queira carregar pela linha de comandos:
+```
+python3 build_csv_cli.py caminho/para/main_dir <id_da_coleção>
+```
+Neste caso <id_da_coleção> seria substituído pelo o número 7, correspoindente à ID da "nova coleção".
 
-O script __prepare_csv.py__ faz uso the __get_max_id.py__ que se connecta à base de dados para obter o número de IDs mais alto de cada tabela, para atribuir novas IDs aos novos dados sem causar confilto (a ID tem de ser única para cada registo)
+Opcionalmente, pode-se ainda acrescentar um terceiro argumento defenindo o caminho para onde gravar os ficheiros csv:
+
+```
+python3 build_csv_admin.py caminho/para/main_dir <id_da_coleção> caminho/personalizado/para/ficheiros/csv
+```
+( ou build_csv_cli.py, como já explicado)
+
+Caso não seja dado nenhum caminho, os ficheiros serão guardados numa pasta - "csv_data" no interior do _main_dir_.
+
+Ambos os scripts de construçaõ dos csv's fazem uso the __get_max_id.py__ que se connecta à base de dados para obter o número de IDs mais alto de cada tabela, para atribuir novas IDs aos novos dados sem causar confilto (a ID tem de ser única para cada registo)
 
 __get_max_id.py__ pode também ser usado de forma independente para vizualizar o id máximo de uma qualquer tabela da base de dados, por exemplo:
 ```
@@ -308,22 +317,66 @@ $python3 get_max_id.py records_record
 #Highest ID in table 'records_record': 50239
 ```
 
-Depois dos ficheiros csv criados, resta apenas fazer a atualização da base de dados, para isso correr:
+Depois de correr o script deverão ser criados três ficheiros, correpondente às restantes 3 tabelas da base de dados:
+```
+.
+├── records_group.csv
+├── records_image.csv
+└── records_record.csv
+```
+
+Obtidos os ficheiros, pode-se fazer o carregamento dos dados para a base de dados de duas maneiras:
+
+### Através do painel de administração
+
+Como já indicado o carregamento de dados deve ser feito na ordem de menor para maior dependencia. Assim, a próxima tabela a ser atualizada deverá ser a dos grupos/gavetas.
+
+Seguir os seguintes passos:
+ - No painel de administração, no separador "RECORDS", clicar em "Drawer/Dossiers".
+ - No canto superior direito clicar em "import"
+ - Clicar em escolher ficheiro e selecionar o ficheiro "records_group.csv"
+ - Confirmar que o selector "Format" mudou automaticamente para csv
+ - Clicar em "SUBMIT"
+ - Vizualizar a tabela de dados a carregada e confirmar se está em conformidade
+ - Confirmar a importação clicando em "CONFIRM IMPORT"
+
+![add_group](assets/add_group.gif)
+
+Os mesmos passos deverão ser igualmente seguidos para as restantes tabelas - Records e Images - apenas mudando o ficheiro csv a carregar.
+
+O nome das instituições, coleções e grupos pode ser mudado a qualquer altura, no painel de administraçaõ sem afetar a integridade da base de dados.
+
+
+Pode-se também carregar os dados para a base de dados pela linha de comandos
+
+
+### Através da linha de comandos
+
+Depois dos ficheiros csv criados com o script apropriado, pode-se fazer o carrregamneto dos dados das 3 tabelas executando apenas o seguinte comando:
 ```
 python3 update_db.py caminho/para/csv_data
 ```
 
 Se todos os passos do projecto foram seguidos, após o script terminar,os documentos deverão estar disponíveis na plataforma.
 
-Caso se pretenda apagar uma instituição,colecção, um grupo ou registo, pode-se usar um dos seguinte comandos:
+### Apagar dados da base de dados
+
+Qualquer registo da base de dados pode ser apagado tanto através do painel de administração como por a execução dos comandos abaixo indicados.
+
+- apagar a instituição e todos os registos a ela associados (goups,records,images)
 ```
-$make del_institution ID=<id da instituição> #apaga a instituição e todos os registos a ela associados (goups,records,images)
-
-$make del_collection ID=<id da coleção> #apaga a colecção e todos os registos a ela associados (goups,records,images)
- 
-$make del_group ID=<id do grupo> #apaga o grupo/gaveta e todos os registos a ela associados (records,images)
-
-$make del_record ID=<id da ficha> #apaga a ficha e todos os registos a ela associados (images)
+make del_institution ID=<id da instituição> 
+```
+- apagar a colecção e todos os registos a ela associados (goups,records,images)
+```
+make del_collection ID=<id da coleção> 
+```
+- apagar o grupo/gaveta e todos os registos a ela associados (records,images)
+```
+make del_group ID=<id do grupo> 
+```
+- apagar a ficha e todos os registos a ela associados (images)
+```
+make del_record ID=<id da ficha> 
 ```
 
-__ATENÇÃO:__ Apagar qualquer uma das tabelas acima mencionadas através do painel de administração não apaga os ficheiros a elas associados. Para não destruir a consistência da base de dados, __usar apenas os comandos acima mencionados, caso se pretenda apagar uma coleção, gaveta ou ficha__.
